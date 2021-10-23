@@ -14,7 +14,23 @@ async function getUsers() {
   return usuarios;
 }
 
-function getUserbyEmail(email) {}
+async function getUserByEmail(email) {
+  const clientMongo = await getConnection();
+  const usuario = clientMongo
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .findOne({ email: email });
+  return usuario;
+}
+
+async function getUserById(id) {
+  const clientMongo = await getConnection();
+  const usuario = clientMongo
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .findOne({ _id: new ObjectId(id) });
+  return usuario;
+}
 
 async function addUser(usuario) {
   const clientMongo = await getConnection();
@@ -25,8 +41,31 @@ async function addUser(usuario) {
   return result;
 }
 
-function updateUser() {}
+async function updateUser(usuario) {
+  const clientMongo = await getConnection();
+  const query = { _id: new ObjectId(usuario._id) };
+  const newValues = {
+    $set: {
+      nombre: usuario.nombre,
+    },
+  };
 
-function deleteUser() {}
+  const result = await clientMongo
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .updateOne(query, newValues);
+  return result;
+}
 
-export { addUser, getUsers };
+
+async function deleteUser(id) {
+  const clientMongo = await getConnection();
+  const result = await clientMongo
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .deleteOne({ _id: new ObjectId(id) });
+  return result;
+}
+
+
+export { addUser, getUsers, updateUser, getUserByEmail, getUserById, deleteUser };
