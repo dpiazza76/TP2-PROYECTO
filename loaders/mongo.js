@@ -1,18 +1,21 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+import dotenv from "dotenv";
+import { MongoClient } from "mongodb";
 
 dotenv.config();
 
 const uri = process.env.MONGODB;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-const connect = async()=>{
-    try {
-        const conection=await mongoose.connect(uri,{useNewUrlParser: true})
-        return conection
-    } catch (error) {
-        console.log(error)
-    }
+let instance = null;
+
+async function getConnection() {
+  if (instance == null) {
+    instance = client.connect();
+  }
+  return instance;
 }
 
-module.exports = connect
-
+export { getConnection };
