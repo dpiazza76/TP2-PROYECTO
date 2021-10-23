@@ -1,3 +1,5 @@
+const connect = require("./loaders/mongo");
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -37,5 +39,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+const mongo = connect()
+console.log(mongo)
 
 module.exports = app;
