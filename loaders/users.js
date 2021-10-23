@@ -4,7 +4,15 @@ import { getConnection } from "./mongo.js";
 const BD1 = "base1";
 const COLLECTION_USUARIOS = "usuarios";
 
-function getUsers() {}
+async function getUsers() {
+  const clientMongo = await getConnection();
+  const usuarios = clientMongo
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .find()
+    .toArray();
+  return usuarios;
+}
 
 function getUserbyEmail(email) {}
 
@@ -21,4 +29,4 @@ function updateUser() {}
 
 function deleteUser() {}
 
-export { addUser };
+export { addUser, getUsers };
