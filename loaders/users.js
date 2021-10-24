@@ -1,5 +1,5 @@
 import { ObjectId } from "bson";
-import { getConnection } from "./mongo.js";
+import getConnection from "./mongo.js";
 
 const BD1 = "base1";
 const COLLECTION_USUARIOS = "usuarios";
@@ -57,7 +57,6 @@ async function updateUser(usuario) {
   return result;
 }
 
-
 async function deleteUser(id) {
   const clientMongo = await getConnection();
   const result = await clientMongo
@@ -67,5 +66,11 @@ async function deleteUser(id) {
   return result;
 }
 
-
-export { addUser, getUsers, updateUser, getUserByEmail, getUserById, deleteUser };
+export {
+  addUser,
+  getUsers,
+  updateUser,
+  getUserByEmail,
+  getUserById,
+  deleteUser,
+};

@@ -18,4 +18,4 @@ async function getConnection() {
   return instance;
 }
 
-export { getConnection };
+export default getConnection;
