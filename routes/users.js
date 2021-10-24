@@ -16,6 +16,10 @@ router.get("/", async function (req, res, next) {
   res.send(users);
 });
 
-//agregar usuario
+//buscar usuario por e-mail
+router.get("/search", async (req, res, next) => {
+  const user = await getUserByEmail(req.query.email);
+  res.send(user);
+});
 
 export default router;
