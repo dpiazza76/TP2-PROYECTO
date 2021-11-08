@@ -9,7 +9,7 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
-let instance = null;
+const instance = null;
 
 async function getConnection() {
   if (instance == null) {

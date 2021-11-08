@@ -25,7 +25,6 @@ app.use(function (req, res, next) {
 });
 
 const mongo = connect();
-console.log(mongo);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server express ejecuntandose en el puerto:${process.env.PORT}`);
