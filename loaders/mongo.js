@@ -9,11 +9,11 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
-const instance = null;
+let instance = null;
 
 async function getConnection() {
   if (instance == null) {
-    instance = client.connect();
+    instance = await client.connect();
   }
   return instance;
 }

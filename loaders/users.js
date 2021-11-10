@@ -1,7 +1,7 @@
 import { ObjectId } from "bson";
 import getConnection from "./mongo.js";
-import { compare } from "bcryptjs";
-import { sign } from "jsonwebtoken";
+import bcryptjs from "bcryptjs";
+import pkg from "jsonwebtoken";
 
 const BD1 = "base1";
 const COLLECTION_USUARIOS = "usuarios";
@@ -70,25 +70,27 @@ async function deleteUser(id) {
   return result;
 }
 
-async function findByCredential(email, password){
+async function findByCredential(email, password) {
   const clientMongo = await getConnection();
   const user = await clientMongo
-                      .db(BD1)
-                      .collection(COLLECTION_USUARIOS)
-                      .findOne({email: email});
-  if(!user){
-      throw new Error('Credenciales no validas');
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .findOne({ email: email });
+  if (!user) {
+    throw new Error("Credenciales no validas");
   }
 
-  const isMatch = await compare(password, user.password);
-  if(!isMatch){
-      throw new Error('Credenciales no validas');
+  const isMatch = await bcryptjs.compare(password, user.password);
+  if (!isMatch) {
+    throw new Error("Credenciales no validas");
   }
   return user;
 }
 
-async function generateAuthToken(user){
-  const token = sign({_id: user._id}, process.env.KEY, {expiresIn: '4h'});
+async function generateAuthToken(user) {
+  const token = pkg.sign({ _id: user._id }, process.env.KEY, {
+    expiresIn: "4h",
+  });
   return token;
 }
 
@@ -100,5 +102,5 @@ export {
   getUserById,
   deleteUser,
   generateAuthToken,
-  findByCredential
+  findByCredential,
 };
