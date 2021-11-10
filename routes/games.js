@@ -17,12 +17,14 @@ router.get("/:gameId", async (req, res) => {
   //también si le mando un id invalido en el objeto JSON me dice como q lo actualiza pero no lo actualizo
 router.post("/update/:id", async (req, res, next) => {
     try{
-        const game = getGameById(req.params.id);
-        const result = updateGame(req.body);
+        const game =  await getGameById(req.params.id);
+        if(!game) return res.status(404).json({error: "Not found"});
+
+        const result =  await updateGame(req.body);
         res.json({ status: result.statusCode, updatedProperties: req.body });
     }
-    catch{
-        res.json({ error: "Juego no encontrado" });
+    catch (error){
+        res.status(500).json([]);
     }
 
   });
