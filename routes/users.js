@@ -6,6 +6,7 @@ import {
   getUserById,
   deleteUser,
 } from "../loaders/users.js";
+
 import express from "express";
 
 const router = express.Router();
@@ -15,6 +16,7 @@ router.get("/", async function (req, res, next) {
   const users = await getUsers();
   res.send(users);
 });
+
 
 //Search user by email.
 router.get("/search", async (req, res, next) => {
@@ -57,5 +59,8 @@ router.delete("/delete/:id", async (req, res, next) => {
   const result = await deleteUser(req.params.id);
   res.json({ status: res.statusCode, result: result });
 });
+
+
+
 
 export default router;
