@@ -4,13 +4,23 @@ import express from "express";
 const router = express.Router();
 
 router.get("/", async function (req, res, next) {
-    const games = await getGames();
-    res.send(games);
+    try {
+      const games = await getGames();
+      res.send(games); 
+    } catch (error) {
+      res.status(500).json([]);
+    }
 });
 
 router.get("/:gameId", async (req, res) => {
-    const game = await getGameById(req.params.gameId)
-    res.send(game);
+    let id = req.params.gameId;
+    if(!id) return res.status(400).json([]);
+    try {
+      const game = await getGameById(id)
+      res.json(game); 
+    } catch (error) {
+      res.status(500).json([]);
+    }
   });
 
   //corregir si mando un id invalido por el param, que me devuelva error
