@@ -2,6 +2,7 @@ import { ObjectId } from "bson";
 import getConnection from "./mongo.js";
 import bcryptjs from "bcryptjs";
 import pkg from "jsonwebtoken";
+import axios, { Axios } from "axios";
 
 const BD1 = "base1";
 const COLLECTION_USUARIOS = "usuarios";
@@ -94,6 +95,11 @@ async function generateAuthToken(user) {
   return token;
 }
 
+async function getGoogleUserByToken(accessToken){
+  const usuario = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`)
+  return usuario
+}
+
 export {
   addUser,
   getUsers,
@@ -103,4 +109,5 @@ export {
   deleteUser,
   generateAuthToken,
   findByCredential,
+  getGoogleUserByToken
 };

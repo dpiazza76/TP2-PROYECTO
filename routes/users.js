@@ -5,6 +5,7 @@ import {
   getUserByEmail,
   getUserById,
   deleteUser,
+  getGoogleUserByToken
 } from "../loaders/users.js";
 
 import express from "express";
@@ -60,7 +61,21 @@ router.delete("/delete/:id", async (req, res, next) => {
   res.json({ status: res.statusCode, result: result });
 });
 
-
+router.get("/getToken/:AccessToken", async (req, res) => {
+  const userGoogle = await getGoogleUserByToken(req.params.AccessToken);
+  const userDB = await getUserByEmail(userGoogle.email)
+  if (!userDB) {
+    userDB = { email: userGoogle.email,
+      maxScore : 0,
+      fullname : userGoogle.name,
+      timesPlayed : 0
+    }
+    const result = await addUser(userDB)
+    userDB = getUserByEmail(userGoogle.email)
+  }
+  const token = generateAuthToken(userDB)
+  res.json({ status: res.statusCode, result: token })
+})
 
 
 export default router;
