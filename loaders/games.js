@@ -23,6 +23,15 @@ async function getGameById(id) {
     return game;
 }
 
+async function getGameByCode(code){
+  const clientMongo = await getConnection();
+  const game = clientMongo
+              .db(BD1)
+              .collection(COLLECTION_JUEGOS)
+              .findOne({"gameCode": code});
+    return game;
+}
+
 async function updateGame(game) {
     const clientMongo = await getConnection();
     const query = { _id: new ObjectId(game._id) };
@@ -42,4 +51,4 @@ async function updateGame(game) {
 
 
 
-  export { getGameById, getGames, updateGame };
+  export { getGameById, getGames, updateGame, getGameByCode };
