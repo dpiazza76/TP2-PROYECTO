@@ -110,19 +110,39 @@ async function getUserGame(gameId, userId) {
   return juegoBuscado[0];
 }
 
+async function updateFav(userId){
+let user = await getUserById(userId);
+
+const clientMongo = await getConnection();
+  const query = { _id: new ObjectId(userId) };
+  let fav = !user.gamesStatistics.snake.isFav
+  const newValues = {
+    $set: {
+      "gamesStatistics.snake.isFav": fav
+    },
+  };
+  const result = await clientMongo
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .updateOne(query, newValues);
+  return result;
+}
+
 async function updateUserGame(game, userId) {
+let user = await getUserById(userId);
+let maxscore2 = user.gamesStatistics.snake.maxScore;
+let timessum = user.gamesStatistics.snake.timesPlayed + 1;
 
-const juego = getUserGame(game.id, userId)
-
-//.find({"customer.satisfaction": { $lte: 3 }})
+if(maxscore2< game.maxScore){
+  maxscore2 = game.maxScore
+}
 
 const clientMongo = await getConnection();
   const query = { _id: new ObjectId(userId) };
   const newValues = {
     $set: {
-      maxScore: game.maxScore,
-      isFav: game.isFav,
-      timesPlayed: game.timesPlayed,
+      "gamesStatistics.snake.maxScore": maxscore2,
+      "gamesStatistics.snake.timesPlayed": timessum
     },
   };
 
@@ -143,5 +163,7 @@ export {
   generateAuthToken,
   findByCredential,
   getGoogleUserByToken,
-  getUserGame
+  getUserGame,
+  updateUserGame,
+  updateFav
 };
