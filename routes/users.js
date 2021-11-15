@@ -6,7 +6,7 @@ import {
   getUserById,
   deleteUser,
   getGoogleUserByToken
-} from "../loaders/users.js";
+} from "../controllers/usersController";
 
 import express from "express";
 const SNAKE_ID = "618b328ecaa87bef9064528a"

@@ -1,4 +1,4 @@
-import { getGameById, getGames, updateGame } from "../loaders/games.js";
+import { getGameById, getGames, updateGame } from "../controllers/gamesController";
 import express from "express";
 
 const router = express.Router();
