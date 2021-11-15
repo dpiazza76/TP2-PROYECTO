@@ -1,12 +1,13 @@
 import connect from "./loaders/mongo.js";
 import createError from "http-errors";
+import cors from "cors";
 import express, { json, urlencoded } from "express";
 import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import indexRouter from "./routes/index.js";
 import usersRouter from "./routes/users.js";
-import gamesRouter from "./routes/games.js"
+import gamesRouter from "./routes/games.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,6 +15,11 @@ const app = express();
 
 app.use(logger("dev"));
 app.use(json());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
