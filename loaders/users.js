@@ -51,7 +51,7 @@ async function updateUser(usuario) {
   const query = { _id: new ObjectId(usuario._id) };
   const newValues = {
     $set: {
-      nombre: usuario.nombre,
+      fullname: usuario.fullname,
     },
   };
 
@@ -59,6 +59,7 @@ async function updateUser(usuario) {
     .db(BD1)
     .collection(COLLECTION_USUARIOS)
     .updateOne(query, newValues);
+
   return result;
 }
 
@@ -95,30 +96,31 @@ async function generateAuthToken(user) {
   return token;
 }
 
-async function getGoogleUserByToken(accessToken){
-  const usuario = await axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`)
-  return usuario
+async function getGoogleUserByToken(accessToken) {
+  const usuario = await axios.get(
+    `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`
+  );
+  return usuario;
 }
 
 async function getUserGame(gameId, userId) {
-  
   const user = await getUserById(userId);
-  const {gamesStatistics} = user;
-  const valores = Object.values(gamesStatistics)
-  const juegoBuscado = valores.filter(juego => juego.id === gameId)
+  const { gamesStatistics } = user;
+  const valores = Object.values(gamesStatistics);
+  const juegoBuscado = valores.filter((juego) => juego.id === gameId);
 
   return juegoBuscado[0];
 }
 
-async function updateFav(userId){
-let user = await getUserById(userId);
+async function updateFav(userId) {
+  let user = await getUserById(userId);
 
-const clientMongo = await getConnection();
+  const clientMongo = await getConnection();
   const query = { _id: new ObjectId(userId) };
-  let fav = !user.gamesStatistics.snake.isFav
+  let fav = !user.gamesStatistics.snake.isFav;
   const newValues = {
     $set: {
-      "gamesStatistics.snake.isFav": fav
+      "gamesStatistics.snake.isFav": fav,
     },
   };
   const result = await clientMongo
@@ -129,20 +131,20 @@ const clientMongo = await getConnection();
 }
 
 async function updateUserGame(game, userId) {
-let user = await getUserById(userId);
-let maxscore2 = user.gamesStatistics.snake.maxScore;
-let timessum = user.gamesStatistics.snake.timesPlayed + 1;
+  let user = await getUserById(userId);
+  let maxscore2 = user.gamesStatistics.snake.maxScore;
+  let timessum = user.gamesStatistics.snake.timesPlayed + 1;
 
-if(maxscore2< game.maxScore){
-  maxscore2 = game.maxScore
-}
+  if (maxscore2 < game.maxScore) {
+    maxscore2 = game.maxScore;
+  }
 
-const clientMongo = await getConnection();
+  const clientMongo = await getConnection();
   const query = { _id: new ObjectId(userId) };
   const newValues = {
     $set: {
       "gamesStatistics.snake.maxScore": maxscore2,
-      "gamesStatistics.snake.timesPlayed": timessum
+      "gamesStatistics.snake.timesPlayed": timessum,
     },
   };
 
@@ -165,5 +167,5 @@ export {
   getGoogleUserByToken,
   getUserGame,
   updateUserGame,
-  updateFav
+  updateFav,
 };
