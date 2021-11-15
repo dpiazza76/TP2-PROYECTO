@@ -5,9 +5,9 @@ import {
   getUserByEmail,
   getUserById,
   deleteUser,
+  getUserGame
 } from "./users.js";
 
-import { getMaxScore } from "./games.js";
 
 // console.log(await getUsers());
 
@@ -31,4 +31,5 @@ import { getMaxScore } from "./games.js";
 
 //console.log(getMaxScore("618b1bf7caa87bef90645287"))
 
-console.log("hola")
+
+console.log(await getUserGame("618b32fecaa87bef9064528b", "6190340cfdde5d1d28f874aa"))

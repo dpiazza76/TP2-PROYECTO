@@ -2,7 +2,7 @@ import { ObjectId } from "bson";
 import getConnection from "./mongo.js";
 import bcryptjs from "bcryptjs";
 import pkg from "jsonwebtoken";
-import axios, { Axios } from "axios";
+import axios from "axios";
 
 const BD1 = "base1";
 const COLLECTION_USUARIOS = "usuarios";
@@ -100,6 +100,39 @@ async function getGoogleUserByToken(accessToken){
   return usuario
 }
 
+async function getUserGame(gameId, userId) {
+  
+  const user = await getUserById(userId);
+  const {gamesStatistics} = user;
+  const valores = Object.values(gamesStatistics)
+  const juegoBuscado = valores.filter(juego => juego.id === gameId)
+
+  return juegoBuscado[0];
+}
+
+async function updateUserGame(game, userId) {
+
+const juego = getUserGame(game.id, userId)
+
+//.find({"customer.satisfaction": { $lte: 3 }})
+
+const clientMongo = await getConnection();
+  const query = { _id: new ObjectId(userId) };
+  const newValues = {
+    $set: {
+      maxScore: game.maxScore,
+      isFav: game.isFav,
+      timesPlayed: game.timesPlayed,
+    },
+  };
+
+  const result = await clientMongo
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .updateOne(query, newValues);
+  return result;
+}
+
 export {
   addUser,
   getUsers,
@@ -109,5 +142,6 @@ export {
   deleteUser,
   generateAuthToken,
   findByCredential,
-  getGoogleUserByToken
+  getGoogleUserByToken,
+  getUserGame
 };

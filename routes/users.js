@@ -9,6 +9,7 @@ import {
 } from "../loaders/users.js";
 
 import express from "express";
+const SNAKE_ID = "618b328ecaa87bef9064528a"
 
 const router = express.Router();
 
@@ -64,9 +65,9 @@ router.post("/update/:id", async (req, res, next) => {
     res.json({ status: result.statusCode, updatedProperties: req.body });
   }catch (error){
     res.status(500).json([]);
-  }
-  
+  }  
 });
+
 
 //Search user by id.
 router.get("/getId/:id", async (req, res, next) => {
@@ -99,10 +100,17 @@ router.get("/getToken/:AccessToken", async (req, res) => {
   const userGoogle = await getGoogleUserByToken(req.params.AccessToken);
   const userDB = await getUserByEmail(userGoogle.email)
   if (!userDB) {
-    userDB = { email: userGoogle.email,
-      maxScore : 0,
-      fullname : userGoogle.name,
-      timesPlayed : 0
+    userDB = {
+      email: userGoogle.email,
+      gamesStatistics: {
+        snake: {
+          id: SNAKE_ID,
+          maxScore: 0,
+          isFav: false,
+          timesPlayed: 0
+        },
+      },
+      fullname: userGoogle.name,
     }
     const result = await addUser(userDB)
     userDB = getUserByEmail(userGoogle.email)
