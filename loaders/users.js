@@ -17,6 +17,13 @@ async function getUsers() {
   return usuarios;
 }
 
+async function getRanking() {
+  const clientMongo = await getConnection();
+  const usuarios = await getUsers();
+  return usuarios.sort(( a ,b ) => a.gamesStatistics.snake.maxScore - b.gamesStatistics.snake.maxScore );
+}
+
+
 async function getUserByEmail(email) {
   const clientMongo = await getConnection();
   const usuario = clientMongo
@@ -168,4 +175,5 @@ export {
   getUserGame,
   updateUserGame,
   updateFav,
+  getRanking
 };

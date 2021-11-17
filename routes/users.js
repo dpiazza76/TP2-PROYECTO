@@ -6,6 +6,7 @@ import {
   getUserById,
   deleteUser,
   getGoogleUserByToken,
+  getRanking,
 } from "../loaders/users.js";
 
 import express from "express";
@@ -22,6 +23,17 @@ router.get("/", async function (req, res, next) {
     res.status(500).json([]);
   }
 });
+
+//Get ranking sorted by maxScore
+router.get("/ranking", async function (req, res, next) {
+  try {
+    const users = await getRanking();
+    res.send(users);
+  } catch (error) {
+    res.status(500).json([]);
+  }
+});
+
 
 //Search user by email.
 router.get("/search", async (req, res, next) => {
