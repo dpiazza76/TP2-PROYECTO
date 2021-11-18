@@ -22,7 +22,7 @@ async function getRanking() {
   const usuarios = await getUsers();
   return usuarios.sort(
     (a, b) =>
-      a.gamesStatistics.snake.maxScore - b.gamesStatistics.snake.maxScore
+      b.gamesStatistics.snake.maxScore - a.gamesStatistics.snake.maxScore
   );
 }
 
@@ -100,8 +100,8 @@ async function login(email, password) {
   if (user) {
     token = await generateAuthToken(user);
   }
-
-  return token;
+  user.token = token;
+  return user;
 }
 
 async function generateAuthToken(user) {
