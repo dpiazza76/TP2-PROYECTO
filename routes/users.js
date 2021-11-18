@@ -80,7 +80,7 @@ router.post("/update/:id", async (req, res, next) => {
     //Chequing existance of user
     if (user == null) throw new Error("User not found!");
 
-    const result = await updateUser(req.body);
+    const result = await updateUser(id, req.body);
     res.json({ status: result.statusCode, updatedProperties: req.body });
   } catch (error) {
     res.status(500).json({ error: "User not found!" });

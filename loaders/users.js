@@ -56,12 +56,18 @@ async function addUser(usuario) {
   return result;
 }
 
-async function updateUser(usuario) {
+async function updateUser(id, usuario) {
   const clientMongo = await getConnection();
-  const query = { _id: new ObjectId(usuario._id) };
+  const query = { _id: new ObjectId(id) };
+
+  if (usuario.password) {
+    usuario.password = await bcrypt.hash(usuario.password, 8);
+  }
+
   const newValues = {
     $set: {
-      fullname: usuario.fullname,
+      "fullname": usuario.fullname,
+      "password": usuario.password,
     },
   };
 
