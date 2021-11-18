@@ -1,6 +1,6 @@
 import { ObjectId } from "bson";
 import getConnection from "./mongo.js";
-import bcryptjs from "bcryptjs";
+import bcrypt from "bcryptjs";
 import pkg from "jsonwebtoken";
 import axios from "axios";
 
@@ -20,9 +20,11 @@ async function getUsers() {
 async function getRanking() {
   const clientMongo = await getConnection();
   const usuarios = await getUsers();
-  return usuarios.sort(( a ,b ) => a.gamesStatistics.snake.maxScore - b.gamesStatistics.snake.maxScore );
+  return usuarios.sort(
+    (a, b) =>
+      a.gamesStatistics.snake.maxScore - b.gamesStatistics.snake.maxScore
+  );
 }
-
 
 async function getUserByEmail(email) {
   const clientMongo = await getConnection();
@@ -50,6 +52,7 @@ async function addUser(usuario) {
     .db(BD1)
     .collection(COLLECTION_USUARIOS)
     .insertOne(usuario);
+
   return result;
 }
 
@@ -85,15 +88,20 @@ async function findByCredential(email, password) {
     .db(BD1)
     .collection(COLLECTION_USUARIOS)
     .findOne({ email: email });
-  if (!user) {
-    throw new Error("Credenciales no validas");
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  return isMatch ? user : undefined;
+}
+
+async function login(email, password) {
+  let user = findByCredential(email, password);
+  let token = undefined;
+
+  if (user) {
+    token = await generateAuthToken(user);
   }
 
-  const isMatch = await bcryptjs.compare(password, user.password);
-  if (!isMatch) {
-    throw new Error("Credenciales no validas");
-  }
-  return user;
+  return token;
 }
 
 async function generateAuthToken(user) {
@@ -175,5 +183,6 @@ export {
   getUserGame,
   updateUserGame,
   updateFav,
-  getRanking
+  getRanking,
+  login,
 };

@@ -7,6 +7,7 @@ import {
   deleteUser,
   getGoogleUserByToken,
   getRanking,
+  login,
 } from "../loaders/users.js";
 
 import express from "express";
@@ -33,7 +34,6 @@ router.get("/ranking", async function (req, res, next) {
     res.status(500).json([]);
   }
 });
-
 
 //Search user by email.
 router.get("/search", async (req, res, next) => {
@@ -63,6 +63,12 @@ router.post("/", async (req, res, next) => {
   } catch (error) {
     res.status(500).json([]);
   }
+});
+
+router.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+  const response = await login(email, password);
+  res.json(response);
 });
 
 //Update user
