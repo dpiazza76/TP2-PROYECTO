@@ -1,4 +1,4 @@
 #-- Dependencias 
 node_modules/
 # -- Variables de Entorno
-.emv
+.env
