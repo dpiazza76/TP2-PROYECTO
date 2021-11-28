@@ -10,6 +10,8 @@ import {
   login,
 } from "../loaders/users.js";
 
+import {auth} from "../middleware/auth.js"
+
 import express from "express";
 const SNAKE_ID = "618b328ecaa87bef9064528a";
 
@@ -26,7 +28,7 @@ router.get("/", async function (req, res, next) {
 });
 
 //Get ranking sorted by maxScore
-router.get("/ranking", async function (req, res, next) {
+router.get("/ranking", auth,  async function (req, res, next) {
   try {
     const users = await getRanking();
     res.send(users);
@@ -36,7 +38,7 @@ router.get("/ranking", async function (req, res, next) {
 });
 
 //Search user by email.
-router.get("/search", async (req, res, next) => {
+router.get("/search", auth, async (req, res, next) => {
   let email = req.query.email;
   if (!email) return res.status(400).json([]);
 
@@ -72,7 +74,7 @@ router.post("/login", async (req, res, next) => {
 });
 
 //Update user
-router.post("/update/:id", async (req, res, next) => {
+router.put("/:id", auth, async (req, res, next) => {
   let id = req.params.id;
   let user = undefined;
   try {
@@ -101,7 +103,7 @@ router.get("/getId/:id", async (req, res, next) => {
 });
 
 //Delete user by id.
-router.delete("/delete/:id", async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
   let id = req.params.id;
   let result = undefined;
   try {

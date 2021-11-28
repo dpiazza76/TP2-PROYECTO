@@ -100,14 +100,33 @@ async function findByCredential(email, password) {
 }
 
 async function login(email, password) {
-  let user = findByCredential(email, password);
+  let user = await findByCredential(email, password);
   let token = undefined;
 
   if (user) {
     token = await generateAuthToken(user);
   }
-  user.token = token;
-  return user;
+  let response = {...user, token:token}
+  console.log(response);
+  return response;
+}
+
+async function updateUserToken(userId, token) {
+  let user = await getUserById(userId);
+
+  const clientMongo = await getConnection();
+  const query = { _id: new ObjectId(userId) };
+
+  const newValues = {
+    $set: {
+      "user.token": token,
+    },
+  };
+  const result = await clientMongo
+    .db(BD1)
+    .collection(COLLECTION_USUARIOS)
+    .updateOne(query, newValues);
+  return result;
 }
 
 async function generateAuthToken(user) {
