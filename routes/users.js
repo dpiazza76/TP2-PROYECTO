@@ -115,7 +115,7 @@ router.delete("/:id", async (req, res, next) => {
   res.json({ status: res.statusCode, result: result });
 });
 
-router.get("/logingoogle/", async (req, res) => {
+router.post("/logingoogle/", async (req, res) => {
   const googleToken = req.header('Authorization').replace('Bearer ', '');
   let userDB = undefined;
   const userGoogle = await getGoogleUserByToken(googleToken)
@@ -144,7 +144,8 @@ router.get("/logingoogle/", async (req, res) => {
     userDB = await getUserByEmail(userGoogle.data.email);
   }
   const token = await generateAuthToken(userDB);
-  res.json({ status: res.statusCode, token: token });
+  let response = {...userDB, token:token}
+  res.json(response);
 });
 
 export default router;
