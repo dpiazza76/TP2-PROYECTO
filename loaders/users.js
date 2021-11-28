@@ -46,8 +46,10 @@ async function getUserById(id) {
 
 async function addUser(usuario) {
   const clientMongo = await getConnection();
-  usuario.password = await bcrypt.hash(usuario.password, 8);
-
+  if (usuario.password !== undefined){
+    usuario.password = await bcrypt.hash(usuario.password, 8);
+  }
+  
   const result = clientMongo
     .db(BD1)
     .collection(COLLECTION_USUARIOS)

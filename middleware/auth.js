@@ -5,7 +5,6 @@ dotenv.config();
 
 function auth(req, res, next){
 
-
     try {
         //console.log(req.header('Authorization'));
         const token = req.header('Authorization').replace('Bearer ', '');
@@ -16,5 +15,6 @@ function auth(req, res, next){
         res.status(401).send({error: error.message});
     }
 }
+
 
 export {auth};

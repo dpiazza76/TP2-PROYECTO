@@ -6,6 +6,7 @@ import {
   getUserById,
   deleteUser,
   getGoogleUserByToken,
+  generateAuthToken,
   getRanking,
   login,
 } from "../loaders/users.js";
@@ -114,27 +115,36 @@ router.delete("/:id", async (req, res, next) => {
   res.json({ status: res.statusCode, result: result });
 });
 
-router.get("/getToken/:AccessToken", async (req, res) => {
-  const userGoogle = await getGoogleUserByToken(req.params.AccessToken);
-  const userDB = await getUserByEmail(userGoogle.email);
-  if (!userDB) {
+router.get("/logingoogle/", async (req, res) => {
+  const googleToken = req.header('Authorization').replace('Bearer ', '');
+  let userDB = undefined;
+  const userGoogle = await getGoogleUserByToken(googleToken)
+
+  if (userGoogle.data) {
+    userDB = await getUserByEmail(userGoogle.data.email);
+    
+  } else {
+    res.send("No se ha podido autenticar")
+  }
+  
+  if (userDB === null || userDB === undefined) {
     userDB = {
-      email: userGoogle.email,
+      fullname: userGoogle.data.name,
+      email: userGoogle.data.email,
       gamesStatistics: {
         snake: {
           id: SNAKE_ID,
           maxScore: 0,
           isFav: false,
-          timesPlayed: 0,
-        },
-      },
-      fullname: userGoogle.name,
+          timesPlayed: 0
+        }
+      }
     };
     const result = await addUser(userDB);
-    userDB = getUserByEmail(userGoogle.email);
+    userDB = await getUserByEmail(userGoogle.data.email);
   }
-  const token = generateAuthToken(userDB);
-  res.json({ status: res.statusCode, result: token });
+  const token = await generateAuthToken(userDB);
+  res.json({ status: res.statusCode, token: token });
 });
 
 export default router;
