@@ -53,6 +53,19 @@ router.get("/search", auth, async (req, res, next) => {
   }
 });
 
+//Search user by id.
+router.get("/:id", async (req, res, next) => {
+  let id = req.params.id;
+  let user = undefined;
+  try {
+    user = await getUserById(id);
+    if (user == null) throw new Error("User not found!");
+  } catch (ex) {
+    res.status(404).json({ error: ex.message });
+  }
+  res.json(user);
+});
+
 //Add user
 router.post("/", async (req, res, next) => {
   try {
@@ -68,54 +81,13 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.post("/login", async (req, res, next) => {
+router.post("/auth/local", async (req, res, next) => {
   const { email, password } = req.body;
   const response = await login(email, password);
   res.json(response);
 });
 
-//Update user
-router.put("/:id", auth, async (req, res, next) => {
-  let id = req.params.id;
-  let user = undefined;
-  try {
-    user = await getUserById(id);
-    //Chequing existance of user
-    if (user == null) throw new Error("User not found!");
-
-    const result = await updateUser(id, req.body);
-    res.json({ status: result.statusCode, updatedProperties: req.body });
-  } catch (error) {
-    res.status(500).json({ error: "User not found!" });
-  }
-});
-
-//Search user by id.
-router.get("/getId/:id", async (req, res, next) => {
-  let id = req.params.id;
-  let user = undefined;
-  try {
-    user = await getUserById(id);
-    if (user == null) throw new Error("User not found!");
-  } catch (ex) {
-    res.status(404).json({ error: ex.message });
-  }
-  res.json(user);
-});
-
-//Delete user by id.
-router.delete("/:id", async (req, res, next) => {
-  let id = req.params.id;
-  let result = undefined;
-  try {
-    result = await deleteUser(id);
-  } catch (error) {
-    res.status(500).json([]);
-  }
-  res.json({ status: res.statusCode, result: result });
-});
-
-router.post("/logingoogle/", async (req, res) => {
+router.post("/auth/google", async (req, res) => {
   const googleToken = req.header('Authorization').replace('Bearer ', '');
   let userDB = undefined;
   const userGoogle = await getGoogleUserByToken(googleToken)
@@ -146,6 +118,34 @@ router.post("/logingoogle/", async (req, res) => {
   const token = await generateAuthToken(userDB);
   let response = {...userDB, token:token}
   res.json(response);
+});
+
+//Update user
+router.put("/:id", auth, async (req, res, next) => {
+  let id = req.params.id;
+  let user = undefined;
+  try {
+    user = await getUserById(id);
+    //Chequing existance of user
+    if (user == null) throw new Error("User not found!");
+
+    const result = await updateUser(id, req.body);
+    res.json({ status: result.statusCode, updatedProperties: req.body });
+  } catch (error) {
+    res.status(500).json({ error: "User not found!" });
+  }
+});
+
+//Delete user by id.
+router.delete("/:id", async (req, res, next) => {
+  let id = req.params.id;
+  let result = undefined;
+  try {
+    result = await deleteUser(id);
+  } catch (error) {
+    res.status(500).json([]);
+  }
+  res.json({ status: res.statusCode, result: result });
 });
 
 export default router;
