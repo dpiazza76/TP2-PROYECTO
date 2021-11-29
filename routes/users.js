@@ -9,6 +9,7 @@ import {
   generateAuthToken,
   getRanking,
   login,
+  updateUserGame
 } from "../loaders/users.js";
 
 import { auth } from "../middleware/auth.js";
@@ -18,6 +19,7 @@ const SNAKE_ID = "618b328ecaa87bef9064528a";
 
 const router = express.Router();
 
+//#region swagger
 /**
  * @swagger
  * /api/users:
@@ -72,6 +74,8 @@ const router = express.Router();
  *                                    description: Indicates the amount of times the player opened and played the game.
  *                                    example: 0
  */
+//#endregion
+
 router.get("/", async function (req, res, next) {
   try {
     const users = await getUsers();
@@ -81,6 +85,7 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+//#region swagger
 /**
  * @swagger
  * /api/users/ranking:
@@ -135,6 +140,8 @@ router.get("/", async function (req, res, next) {
  *                                    description: Indicates the amount of times the player opened and played the game.
  *                                    example: 0
  */
+//#endregion
+
 router.get("/ranking", auth, async function (req, res, next) {
   try {
     const users = await getRanking();
@@ -144,6 +151,7 @@ router.get("/ranking", auth, async function (req, res, next) {
   }
 });
 
+//#region swagger
 /**
  * @swagger
  * /api/users/search:
@@ -205,6 +213,8 @@ router.get("/ranking", auth, async function (req, res, next) {
  *                                    description: Indicates the amount of times the player opened and played the game.
  *                                    example: 0
  */
+//#endregion
+
 router.get("/search", auth, async (req, res, next) => {
   let email = req.query.email;
   if (!email) return res.status(400).json([]);
@@ -219,6 +229,7 @@ router.get("/search", auth, async (req, res, next) => {
   }
 });
 
+//#region swagger
 /**
  * @swagger
  * /api/users/{id}:
@@ -275,6 +286,8 @@ router.get("/search", auth, async (req, res, next) => {
  *                                    description: Indicates the amount of times the player opened and played the game.
  *                                    example: 0
  */
+//#endregion
+
 router.get("/:id", auth, async (req, res, next) => {
   let id = req.params.id;
   let user = undefined;
@@ -287,6 +300,7 @@ router.get("/:id", auth, async (req, res, next) => {
   res.json(user);
 });
 
+//#region swagger
 /**
  * @swagger
  * /api/users:
@@ -333,6 +347,8 @@ router.get("/:id", auth, async (req, res, next) => {
  *                         description: The user ID.
  *                         example: 61a4f2b0e3b0cc9a011ac864
  */
+//#endregion
+
 router.post("/",  async (req, res, next) => {
   try {
     // Chequing non existance of user
@@ -347,6 +363,7 @@ router.post("/",  async (req, res, next) => {
   }
 });
 
+//#region swagger
 /**
  * @swagger
  * /api/users/{id}:
@@ -403,12 +420,14 @@ router.post("/",  async (req, res, next) => {
  *                          description: The user ID.
  *                          example: 6196c74ebe95d35950423176
  */
+//#endregion
+
 router.put("/:id", auth, async (req, res, next) => {
   let id = req.params.id;
   let user = undefined;
   try {
     user = await getUserById(id);
-    //Chequing existance of user
+    //Checking existance of user
     if (user == null) throw new Error("User not found!");
 
     const result = await updateUser(id, req.body);
@@ -418,6 +437,64 @@ router.put("/:id", auth, async (req, res, next) => {
   }
 });
 
+
+//#region swagger
+/**
+ * @swagger
+ * /api/users/updateGame/{id}:
+ *   put:
+ *     summary: Update a single user game by id
+ *     description: Update a single user game. Can be used to consume in a client as it serves all the data to implement in a frontend.
+ *     parameters:
+ *            - in: path
+ *              name: id
+ *              required: true
+ *              description: String id of the user to retrieve.
+ *              schema:
+ *                type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *               type: object
+ *               properties:
+ *                       newScore:
+ *                          type: integer
+ *                          description: the user's new score.
+ *                          example: 100
+ *     responses:
+ *       200:
+ *         description: Update a single user game.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                     message: string
+ *                     description: message
+ *                     example: Usuario actualizado
+ */
+//#endregion
+
+router.put("/updateGame/:id", auth, async (req, res, next) => {
+  let id = req.params.id;
+  let user = undefined;
+  try {
+    user = await getUserById(id);
+    //Checking existance of user
+    if (user == null) throw new Error("User not found!");
+
+    const result = await updateUserGame(req.body.newScore, id);
+    res.json({ status: result.statusCode, message: "Usuario actualizado" });
+  } catch (error) {
+    res.status(500).json({ error: "User not found!" });
+  }
+});
+
+
+
+//#region swagger
 /**
  * @swagger
  * /api/users/{id}:
@@ -452,6 +529,8 @@ router.put("/:id", auth, async (req, res, next) => {
  *                      type: integer
  *                      example: 1
  */
+//#endregion
+
 router.delete("/:id", auth, async (req, res, next) => {
   let id = req.params.id;
   let result = undefined;

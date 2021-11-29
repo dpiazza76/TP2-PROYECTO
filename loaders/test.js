@@ -51,4 +51,4 @@ import {
 
 // console.log(await getUserById("6191c3bc8db0c60c16a43f42"))
 
-console.log(await getRanking())
+console.log(await updateUserGame(100, "61a53fb9b9ed4a4ce781d0d1"))

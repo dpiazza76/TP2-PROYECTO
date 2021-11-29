@@ -81,6 +81,9 @@ async function updateUser(id, usuario) {
   return result;
 }
 
+
+
+
 async function deleteUser(id) {
   const clientMongo = await getConnection();
   const result = await clientMongo
@@ -171,13 +174,13 @@ async function updateFav(userId) {
   return result;
 }
 
-async function updateUserGame(game, userId) {
+async function updateUserGame(newScore, userId) {
   let user = await getUserById(userId);
   let maxscore2 = user.gamesStatistics.snake.maxScore;
   let timessum = user.gamesStatistics.snake.timesPlayed + 1;
 
-  if (maxscore2 < game.maxScore) {
-    maxscore2 = game.maxScore;
+  if (maxscore2 < newScore) {
+    maxscore2 = newScore;
   }
 
   const clientMongo = await getConnection();

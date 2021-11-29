@@ -3,6 +3,7 @@ import express from "express";
 
 const router = express.Router();
 
+//#region swagger
 /**
  * @swagger
  * /api/games:
@@ -43,6 +44,8 @@ const router = express.Router();
  *                          description: The game's amount of times its been played.
  *                          example: 10
  */
+//#endregion
+
 router.get("/", async function (req, res, next) {
   try {
     const games = await getGames();
@@ -52,6 +55,7 @@ router.get("/", async function (req, res, next) {
   }
 });
 
+//#region swagger
 /**
  * @swagger
  * /api/games/{id}:
@@ -94,6 +98,8 @@ router.get("/", async function (req, res, next) {
  *                          description: The game's amount of times its been played.
  *                          example: 10
  */
+//#endregion
+
 router.get("/:id", async (req, res) => {
   let id = req.params.id;
   if (!id) return res.status(400).json([]);
@@ -105,6 +111,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+//#region swagger
 /**
  * @swagger
  * /api/games/{id}:
@@ -166,6 +173,9 @@ router.get("/:id", async (req, res) => {
  *                          description: The game's amount of times its been played.
  *                          example: 10
  */
+//#endregion
+
+
 router.put("/:id", async (req, res, next) => {
   try {
     const game = await getGameById(req.params.id);

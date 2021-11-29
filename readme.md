@@ -5,4 +5,6 @@ Instrucciones de instalacion:
 npm install
 obterer el archivo de variables de entorno
 
-Lista de Router (EndoPoints)
+Lista de Router (EndPoints)
+Están en Swagger:
+/api/docs
