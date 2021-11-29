@@ -275,7 +275,7 @@ router.get("/search", auth, async (req, res, next) => {
  *                                    description: Indicates the amount of times the player opened and played the game.
  *                                    example: 0
  */
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", auth, async (req, res, next) => {
   let id = req.params.id;
   let user = undefined;
   try {
@@ -333,7 +333,7 @@ router.get("/:id", async (req, res, next) => {
  *                         description: The user ID.
  *                         example: 61a4f2b0e3b0cc9a011ac864
  */
-router.post("/", async (req, res, next) => {
+router.post("/",  async (req, res, next) => {
   try {
     // Chequing non existance of user
     if (await getUserByEmail(req.body.email))
@@ -403,7 +403,7 @@ router.post("/", async (req, res, next) => {
  *                          description: The user ID.
  *                          example: 6196c74ebe95d35950423176
  */
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", auth, async (req, res, next) => {
   let id = req.params.id;
   let user = undefined;
   try {
@@ -452,7 +452,7 @@ router.put("/:id", async (req, res, next) => {
  *                      type: integer
  *                      example: 1
  */
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", auth, async (req, res, next) => {
   let id = req.params.id;
   let result = undefined;
   try {
