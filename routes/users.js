@@ -9,7 +9,8 @@ import {
   generateAuthToken,
   getRanking,
   login,
-  updateUserGame
+  updateUserGame,
+  updateFav
 } from "../loaders/users.js";
 
 import { auth } from "../middleware/auth.js";
@@ -486,6 +487,21 @@ router.put("/updateGame/:id", auth, async (req, res, next) => {
     if (user == null) throw new Error("User not found!");
 
     const result = await updateUserGame(req.body.newScore, id);
+    res.json({ status: result.statusCode, message: "Usuario actualizado" });
+  } catch (error) {
+    res.status(500).json({ error: "User not found!" });
+  }
+});
+
+router.put("/updateFav/:id", auth, async (req, res, next) => {
+  let id = req.params.id;
+  let user = undefined;
+  try {
+    user = await getUserById(id);
+    //Checking existance of user
+    if (user == null) throw new Error("User not found!");
+
+    const result = await updateFav(id);
     res.json({ status: result.statusCode, message: "Usuario actualizado" });
   } catch (error) {
     res.status(500).json({ error: "User not found!" });
